@@ -9,38 +9,7 @@
 namespace Phlexible\Bundle\AccessControlBundle\Tests\Permission;
 
 use Phlexible\Bundle\AccessControlBundle\Entity\AccessControlEntry;
-
-class HierarchyMaskResolver
-{
-    /**
-     * @param AccessControlEntry[] $path
-     *
-     * @return int
-     */
-    public function resolve(array $path)
-    {
-        $first = true;
-        $mask = 0;
-
-        while (count($path)) {
-            $ace = array_shift($path);
-
-            $currentMask = $ace->getMask();
-            if (!$first && $ace->getStopMask()) {
-                // apply stop mask
-                $currentMask = $currentMask ^ $ace->getStopMask();
-            }
-            if (count($path) && $ace->getNoInheritMask()) {
-                // apply no inherit mask
-                $currentMask = $currentMask ^ $ace->getNoInheritMask();
-            }
-            $mask = $currentMask ^ $mask;
-            $first = false;
-        }
-
-        return $mask;
-    }
-}
+use Phlexible\Bundle\AccessControlBundle\Permission\HierarchyMaskResolver;
 
 /**
  * Hierarchy mask resolver test
