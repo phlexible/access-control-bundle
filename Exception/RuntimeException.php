@@ -9,11 +9,11 @@
 namespace Phlexible\Bundle\AccessControlBundle\Exception;
 
 /**
- * Base exception
+ * Runtime exception
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class Exception extends \Exception
+class RuntimeException extends \RuntimeException
 {
 
 }
