@@ -9,11 +9,11 @@
 namespace Phlexible\Bundle\AccessControlBundle\Exception;
 
 /**
- * Runtime exception for access control bundle
+ * Exception interface for access control bundle
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class RuntimeException extends \RuntimeException implements ExceptionInterface
+interface ExceptionInterface
 {
 
 }
