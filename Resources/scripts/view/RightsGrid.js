@@ -1,4 +1,6 @@
-Ext.namespace('Phlexible.accesscontrol');
+Ext.provide('Phlexible.accesscontrol.RightsGrid');
+Ext.require('Ext.ux.IconCombo');
+Ext.require('Ext.ux.grid.RowActions');
 
 Phlexible.accesscontrol.RightsGrid = Ext.extend(Ext.grid.EditorGridPanel, {
     title: Phlexible.accesscontrol.Strings.access,
