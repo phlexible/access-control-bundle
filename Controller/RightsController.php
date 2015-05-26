@@ -10,8 +10,6 @@ namespace Phlexible\Bundle\AccessControlBundle\Controller;
 
 use Phlexible\Bundle\GuiBundle\Response\ResultResponse;
 use Phlexible\Component\AccessControl\Exception\InvalidArgumentException;
-use Phlexible\Component\AccessControl\Model\ObjectIdentity;
-use Phlexible\Component\AccessControl\Permission\PermissionResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,13 +17,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Access controller
+ * Rights controller
  *
  * @author Stephan Wentz <sw@brainbits.net>
  * @Route("/accesscontrol")
  * @Security("is_granted('ROLE_ACCESS_CONTROL')")
  */
-class AccessController extends Controller
+class RightsController extends Controller
 {
     /**
      * @param Request $request
@@ -69,48 +67,22 @@ class AccessController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
-     * @Route("/permissions", name="accesscontrol_permissions")
+     * @Route("/rights", name="accesscontrol_rights")
      */
-    public function permissionsAction(Request $request)
+    public function rightsAction(Request $request)
     {
-        $objectType = $request->get('objectType');
+        $contentClass = $request->get('contentClass');
 
-        $permissionRegistry = $this->get('phlexible_access_control.permission_registry');
-        $permissions = array();
-        foreach ($permissionRegistry->get($objectType)->all() as $permission) {
-            $permissions[] = [
+        $permissions = $this->get('phlexible_access_control.permissions');
+        $contentRights = [];
+        foreach ($permissions->getByContentClass($contentClass) as $permission) {
+            $contentRights[] = [
                 'name'    => $permission->getName(),
-                'bit'     => $permission->getBit(),
-                'iconCls' => 'null',
+                'iconCls' => $permission->getIconClass(),
             ];
         }
 
-        return new JsonResponse(array('permissions' => $permissions));
-    }
-
-    /**
-     * List subjects
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     * @Route("/identities", name="accesscontrol_identities")
-     */
-    public function identitiesAction(Request $request)
-    {
-        $objectType = $request->get('objectType');
-        $objectId = $request->get('objectId');
-
-        $objectIdentity = new ObjectIdentity($objectId, $objectType);
-
-        $accessManager = $this->get('phlexible_access_control.access_manager');
-        $acl = $accessManager->findAcl($objectIdentity);
-        $permissionResolver = $this->get('phlexible_access_control.permission_resolver');
-        dump($acl);
-        dump($permissionResolver->resolve($acl));
-        die;
-
-        return new JsonResponse($acl->getPermissions());
+        return new JsonResponse($contentRights);
     }
 
     /**
